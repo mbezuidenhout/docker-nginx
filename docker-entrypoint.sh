@@ -128,7 +128,7 @@ server {
 
 	location / {
 		try_files \$uri \$uri/ /index.php?\$args;
-		index	index.php index.html index.htm;
+		index  index.php index.html index.htm;
 	}
 
 	location ~ \.php$ {
@@ -143,6 +143,7 @@ server {
 	}
 
 	location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+        charset utf-8;
 		expires max;
 		log_not_found off;
 	}
@@ -192,7 +193,7 @@ server {
 		fastcgi_pass   php-fpm;
 		fastcgi_index  index.php;
 		fastcgi_param  SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-		include		fastcgi_params;
+		include        fastcgi_params;
 	}
 
 	location ~ /\. {
@@ -200,6 +201,7 @@ server {
 	}
 
 	location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+        charset utf-8;
 		expires max;
 		log_not_found off;
 	}
