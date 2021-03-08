@@ -97,13 +97,16 @@ server {
 	ssl_certificate	    /etc/nginx/ssl/${hostname}.crt;
 	ssl_certificate_key /etc/nginx/ssl/${hostname}.key;
 	ssl_dhparam         /etc/nginx/ssl/dhparam.pem;
-	ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+	ssl_protocols       TLSv1.1 TLSv1.2;
 	ssl_prefer_server_ciphers on;
 	ssl_ciphers         'ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5';
 	ssl_session_cache   shared:SSL:20m;
 	ssl_session_timeout 10m;
-	add_header          Strict-Transport-Security max-age=63072000;
+	server_tokens       off;
+	add_header          Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
 	add_header          X-Frame-Options "SAMEORIGIN";
+	add_header          X-XSS-Protection "1; mode=block";
+	add_header          X-Content-Type-Options nosniff;
 	root                /var/www/html;
 
 	gzip                on;
@@ -136,6 +139,9 @@ server {
 		fastcgi_index  index.php;
 		fastcgi_param  SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
 		include        fastcgi_params;
+		add_header Cache-Control "no-cache, no-store";
+		expires 0;
+		add_header Pragma no-cache;
 	}
 
 	location ~ /\. {
@@ -143,7 +149,8 @@ server {
 	}
 
 	location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-        charset utf-8;
+ 		charset utf-8;
+ 		charset_types *;
 		expires max;
 		log_not_found off;
 	}
@@ -160,8 +167,11 @@ EOFHTTPS
 server {
 	listen          80;
 	server_name     ${hostname};
+	server_tokens   off;
 	add_header      Strict-Transport-Security max-age=63072000;
 	add_header      X-Frame-Options "SAMEORIGIN";
+	add_header      X-XSS-Protection "1; mode=block";
+	add_header      X-Content-Type-Options nosniff;
 	root            /var/www/html;
 
 	gzip            on;
@@ -194,6 +204,9 @@ server {
 		fastcgi_index  index.php;
 		fastcgi_param  SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
 		include        fastcgi_params;
+		add_header Cache-Control "no-cache, no-store";
+		expires 0;
+		add_header Pragma no-cache;
 	}
 
 	location ~ /\. {
@@ -201,7 +214,8 @@ server {
 	}
 
 	location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-        charset utf-8;
+ 		charset utf-8;
+ 		charset_types *;
 		expires max;
 		log_not_found off;
 	}
